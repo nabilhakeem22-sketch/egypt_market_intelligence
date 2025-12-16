@@ -94,10 +94,10 @@ def get_hierarchy():
     # 2. Get Macro Sectors (Semi-Dynamic from Macro Engine)
     # We constructed the tree structure here to match the frontend expectation
     macro_items = [
-        {"name": "manufacturing_gdp", "label": "Manufacturing (% GDP)", "icon": "Activity"},
-        {"name": "agriculture_gdp", "label": "Agriculture (% GDP)", "icon": "Activity"},
-        {"name": "services_gdp", "label": "Services (% GDP)", "icon": "Activity"},
-        {"name": "exports_gdp", "label": "Exports (% GDP)", "icon": "Activity"},
+        {"name": "manufacturing_gdp", "label": "Manufacturing (% GDP)", "icon": "Activity", "industries": ["Logistics", "Retail", "Real Estate"]},
+        {"name": "agriculture_gdp", "label": "Agriculture (% GDP)", "icon": "Activity", "industries": ["F&B"]},
+        {"name": "services_gdp", "label": "Services (% GDP)", "icon": "Activity", "industries": ["Retail", "Real Estate", "Technology", "F&B"]},
+        {"name": "exports_gdp", "label": "Exports (% GDP)", "icon": "Activity", "industries": ["Logistics", "Manufacturing"]},
     ]
     
     macro_node = {

@@ -7,13 +7,14 @@ import api from "@/utils/api";
 interface HierarchySidebarProps {
     selectedMetric: string;
     onSelectMetric: (metric: string) => void;
+    industry: string;
 }
 
 const ICON_MAP: any = {
     PieChart, Activity, TrendingUp, DollarSign, Users
 };
 
-export default function HierarchySidebar({ selectedMetric, onSelectMetric }: HierarchySidebarProps) {
+export default function HierarchySidebar({ selectedMetric, onSelectMetric, industry }: HierarchySidebarProps) {
     const [expandedSectors, setExpandedSectors] = useState<string[]>(["Market Indicators", "Operational Metrics"]);
     const [tree, setTree] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -52,6 +53,16 @@ export default function HierarchySidebar({ selectedMetric, onSelectMetric }: Hie
                     const isExpanded = expandedSectors.includes(sector.name);
                     const SectorIcon = ICON_MAP[sector.icon] || PieChart;
 
+                    // Filter items based on Industry
+                    const visibleItems = sector.items.filter((item: any) => {
+                        // Logic: Show if no industry defined (universal) OR current industry is in list
+                        if (!item.industries || item.industries.length === 0) return true;
+                        return item.industries.includes(industry);
+                    });
+
+                    // Hide sector if no items visible
+                    if (visibleItems.length === 0) return null;
+
                     return (
                         <div key={sector.name}>
                             <button
@@ -65,7 +76,7 @@ export default function HierarchySidebar({ selectedMetric, onSelectMetric }: Hie
 
                             {isExpanded && (
                                 <div className="ml-4 pl-2 border-l border-zinc-200 dark:border-zinc-700 space-y-1 mt-1">
-                                    {sector.items.map((item: any) => {
+                                    {visibleItems.map((item: any) => {
                                         const ItemIcon = ICON_MAP[item.icon] || Activity;
                                         return (
                                             <button

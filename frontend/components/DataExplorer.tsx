@@ -10,12 +10,12 @@ import CompareView from "./data-explorer/CompareView";
 import { useDashboard } from "@/context/DashboardContext";
 
 export default function DataExplorer() {
-    const { filters, setFilters, setDistricts: setContextDistricts, setMetric: setContextMetric, setIndustry: setContextIndustry, data, setData, loading, setLoading } = useDashboard();
+    const { filters, setFilters, setDistricts: setContextDistricts, setMetric: setContextMetric, setIndustry: setContextIndustry, setRentRange: setContextRentRange, data, setData, loading, setLoading } = useDashboard();
     const [districts, setDistricts] = useState<string[]>([]); // List of available districts
     const [viewMode, setViewMode] = useState<"explore" | "compare">("explore");
 
     // Destructure filters for easier access
-    const { districts: selectedDistricts, timePeriod, density: densityFilter, traffic: trafficFilter, metric: selectedMetric, industry: selectedIndustry } = filters;
+    const { districts: selectedDistricts, timePeriod, density: densityFilter, traffic: trafficFilter, metric: selectedMetric, industry: selectedIndustry, rentRange } = filters;
 
     useEffect(() => {
         fetchDistricts();
@@ -108,6 +108,8 @@ export default function DataExplorer() {
                 onViewModeChange={setViewMode}
                 industry={selectedIndustry}
                 onIndustryChange={setContextIndustry}
+                rentRange={rentRange}
+                onRentRangeChange={setContextRentRange}
             />
 
             <div className="flex flex-1 overflow-hidden">
@@ -116,6 +118,7 @@ export default function DataExplorer() {
                 <HierarchySidebar
                     selectedMetric={selectedMetric}
                     onSelectMetric={setSelectedMetric}
+                    industry={selectedIndustry}
                 />
 
                 {/* Main Content Area */}

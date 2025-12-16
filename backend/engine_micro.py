@@ -374,9 +374,19 @@ class MicroEngine:
         # 1. Market Indicators
         market_items = []
         if "Avg_Rent_Sqm_EGP" in self.df.columns:
-            market_items.append({"name": "Avg_Rent_Sqm_EGP", "label": "Avg Rent (EGP)", "icon": "DollarSign"})
-        if "Vacancy_Rate" in self.df.columns: # Check if we have this, or add if missing (mock)
-             market_items.append({"name": "Vacancy_Rate", "label": "Vacancy Rate", "icon": "Activity"})
+            market_items.append({
+                "name": "Avg_Rent_Sqm_EGP", 
+                "label": "Avg Rent (EGP)", 
+                "icon": "DollarSign",
+                "industries": ["Retail", "F&B", "Logistics", "Real Estate"] # Universal
+            })
+        if "Vacancy_Rate" in self.df.columns:
+             market_items.append({
+                 "name": "Vacancy_Rate", 
+                 "label": "Vacancy Rate", 
+                 "icon": "Activity",
+                 "industries": ["Real Estate", "Logistics"]
+             })
         
         if market_items:
             tree.append({
@@ -388,9 +398,19 @@ class MicroEngine:
         # 2. Operational Metrics
         op_items = []
         if "Foot_Traffic_Score" in self.df.columns:
-            op_items.append({"name": "Foot_Traffic_Score", "label": "Foot Traffic", "icon": "Users"})
+            op_items.append({
+                "name": "Foot_Traffic_Score", 
+                "label": "Foot Traffic", 
+                "icon": "Users",
+                "industries": ["Retail", "F&B"] # Not for Warehouses/Offices primarily
+            })
         if "Competitor_Density" in self.df.columns:
-            op_items.append({"name": "Competitor_Density", "label": "Competitor Density", "icon": "Users"})
+            op_items.append({
+                "name": "Competitor_Density", 
+                "label": "Competitor Density", 
+                "icon": "Users",
+                "industries": ["Retail", "F&B", "Healthcare"]
+            })
         
         if op_items:
             tree.append({
