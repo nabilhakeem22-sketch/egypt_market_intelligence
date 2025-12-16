@@ -47,6 +47,38 @@ class MacroEngine:
             print(f"Error fetching {indicator_code}: {e}")
             return []
 
+    def fetch_data360(self, indicator_code, country_code="EGY"):
+        """
+        Fetches data from the new World Bank Data360 API.
+        Example Indicator: 'WB_WDI_SE_PRM_CMPT_FE_ZS' (Primary completion rate)
+        """
+        url = "https://data360api.worldbank.org/data360/data"
+        params = {
+            "indicator": indicator_code,
+            "refArea": country_code,
+            "timePeriodFrom": "2020" # Optional: Filter by year
+        }
+        
+        try:
+            response = requests.get(url, params=params, timeout=10)
+            response.raise_for_status()
+            data = response.json()
+            
+            # The API returns a 'value' list
+            clean_data = []
+            for entry in data.get('value', []):
+                clean_data.append({
+                    "year": entry.get('TIME_PERIOD'),
+                    "value": entry.get('OBS_VALUE'),
+                    "source": entry.get('DATA_SOURCE')
+                })
+            
+            return sorted(clean_data, key=lambda x: x['year'])
+            
+        except Exception as e:
+            print(f"Data360 Error: {e}")
+            return []
+
     def get_macro_summary(self):
         """Returns a summary of key macro indicators."""
         # Simple in-memory caching (refresh if older than 1 day - for MVP)
