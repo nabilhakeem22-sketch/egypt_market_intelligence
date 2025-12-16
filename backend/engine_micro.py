@@ -357,6 +357,9 @@ class MicroEngine:
         if filters.get('competitor_density'):
             filtered_df = filtered_df[filtered_df['Competitor_Density'].isin(filters['competitor_density'])]
 
+        # Handle NaNs for JSON serialization
+        filtered_df = filtered_df.astype(object).where(pd.notnull(filtered_df), None)
+
         return filtered_df.to_dict('records')
 
     def get_hierarchy_tree(self):
