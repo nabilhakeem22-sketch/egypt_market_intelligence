@@ -354,11 +354,49 @@ class MicroEngine:
         if filters.get('max_traffic') is not None:
             filtered_df = filtered_df[filtered_df['Foot_Traffic_Score'] <= filters['max_traffic']]
 
-        # Filter by Competitor Density
         if filters.get('competitor_density'):
             filtered_df = filtered_df[filtered_df['Competitor_Density'].isin(filters['competitor_density'])]
 
         return filtered_df.to_dict('records')
+
+    def get_hierarchy_tree(self):
+        """
+        Returns the hierarchy tree for Micro data based on available columns.
+        """
+        if self.df is None or self.df.empty:
+             return []
+
+        tree = []
+        
+        # 1. Market Indicators
+        market_items = []
+        if "Avg_Rent_Sqm_EGP" in self.df.columns:
+            market_items.append({"name": "Avg_Rent_Sqm_EGP", "label": "Avg Rent (EGP)", "icon": "DollarSign"})
+        if "Vacancy_Rate" in self.df.columns: # Check if we have this, or add if missing (mock)
+             market_items.append({"name": "Vacancy_Rate", "label": "Vacancy Rate", "icon": "Activity"})
+        
+        if market_items:
+            tree.append({
+                "name": "Market Indicators",
+                "icon": "PieChart",
+                "items": market_items
+            })
+
+        # 2. Operational Metrics
+        op_items = []
+        if "Foot_Traffic_Score" in self.df.columns:
+            op_items.append({"name": "Foot_Traffic_Score", "label": "Foot Traffic", "icon": "Users"})
+        if "Competitor_Density" in self.df.columns:
+            op_items.append({"name": "Competitor_Density", "label": "Competitor Density", "icon": "Users"})
+        
+        if op_items:
+            tree.append({
+                "name": "Operational Metrics",
+                "icon": "TrendingUp",
+                "items": op_items
+            })
+            
+        return tree
 
 # Singleton instance
 micro_engine = MicroEngine()

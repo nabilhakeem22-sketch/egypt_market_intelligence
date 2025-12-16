@@ -88,7 +88,28 @@ def get_districts():
 @app.get("/api/hierarchy")
 def get_hierarchy():
     """Returns the full data hierarchy tree."""
-    return {"tree": micro_engine.get_hierarchy_tree()}
+    # 1. Get Micro Data Hierarchy (Dynamic)
+    micro_tree = micro_engine.get_hierarchy_tree()
+
+    # 2. Get Macro Sectors (Semi-Dynamic from Macro Engine)
+    # We constructed the tree structure here to match the frontend expectation
+    macro_items = [
+        {"name": "manufacturing_gdp", "label": "Manufacturing (% GDP)", "icon": "Activity"},
+        {"name": "agriculture_gdp", "label": "Agriculture (% GDP)", "icon": "Activity"},
+        {"name": "services_gdp", "label": "Services (% GDP)", "icon": "Activity"},
+        {"name": "exports_gdp", "label": "Exports (% GDP)", "icon": "Activity"},
+    ]
+    
+    macro_node = {
+        "name": "Macroeconomic Sectors",
+        "icon": "PieChart",
+        "items": macro_items
+    }
+
+    # Combine
+    full_tree = micro_tree + [macro_node]
+    
+    return {"tree": full_tree}
 
 @app.get("/")
 def read_root():
