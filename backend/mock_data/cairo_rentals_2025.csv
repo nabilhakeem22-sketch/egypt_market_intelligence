@@ -1,0 +1,9 @@
+District,Avg_Rent_Sqm_EGP,Foot_Traffic_Score,Competitor_Density,Vacancy_Rate,Last_Survey_Date
+Maadi,450,8.5,High,0.05,2025-10-15
+Zamalek,650,7.2,Medium,0.02,2025-11-01
+New Cairo (5th Settlement),380,6.8,High,0.12,2025-09-20
+6th of October,320,7.5,Medium,0.15,2025-10-05
+Downtown,280,9.5,Very High,0.08,2025-11-10
+Sheikh Zayed,420,7.0,Medium,0.10,2025-10-25
+Nasr City,300,8.8,High,0.06,2025-11-05
+Heliopolis,400,8.0,Medium,0.04,2025-10-30
