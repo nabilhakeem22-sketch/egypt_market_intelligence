@@ -8,6 +8,7 @@ interface DashboardFilters {
     density: string[];
     traffic: number;
     metric: string;
+    industry: string;
 }
 
 interface DashboardContextType {
@@ -16,6 +17,7 @@ interface DashboardContextType {
     // Helper setters for convenience
     setDistricts: (districts: string[]) => void;
     setMetric: (metric: string) => void;
+    setIndustry: (industry: string) => void;
 
     data: any;
     setData: (data: any) => void;
@@ -31,16 +33,18 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         timePeriod: "Last 30 Days",
         density: [],
         traffic: 0,
-        metric: "Avg_Rent_Sqm_EGP"
+        metric: "Avg_Rent_Sqm_EGP",
+        industry: "Retail" // Default
     });
     const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState(false);
 
     const setDistricts = (districts: string[]) => setFilters(prev => ({ ...prev, districts }));
     const setMetric = (metric: string) => setFilters(prev => ({ ...prev, metric }));
+    const setIndustry = (industry: string) => setFilters(prev => ({ ...prev, industry }));
 
     return (
-        <DashboardContext.Provider value={{ filters, setFilters, setDistricts, setMetric, data, setData, loading, setLoading }}>
+        <DashboardContext.Provider value={{ filters, setFilters, setDistricts, setMetric, setIndustry, data, setData, loading, setLoading }}>
             {children}
         </DashboardContext.Provider>
     );

@@ -14,6 +14,8 @@ interface GlobalContextBarProps {
     onTrafficChange: (traffic: number) => void;
     viewMode: "explore" | "compare";
     onViewModeChange: (mode: "explore" | "compare") => void;
+    industry: string;
+    onIndustryChange: (industry: string) => void;
 }
 
 export default function GlobalContextBar({
@@ -27,31 +29,63 @@ export default function GlobalContextBar({
     trafficFilter,
     onTrafficChange,
     viewMode,
-    onViewModeChange
+    onViewModeChange,
+    industry,
+    onIndustryChange
 }: GlobalContextBarProps) {
+    const INDUSTRIES = ["Retail", "F&B", "Real Estate", "Logistics", "Technology"];
+
     return (
         <div className="w-full bg-white dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700 p-4 flex justify-between items-center px-8 shadow-sm z-20 relative">
 
-            {/* Left: View Toggle */}
-            <div className="flex bg-zinc-100 dark:bg-zinc-700/50 p-1 rounded-lg">
-                <button
-                    onClick={() => onViewModeChange("explore")}
-                    className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${viewMode === "explore"
-                        ? "bg-white dark:bg-zinc-600 shadow-sm text-blue-600 dark:text-blue-400"
-                        : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
-                        }`}
-                >
-                    Explore
-                </button>
-                <button
-                    onClick={() => onViewModeChange("compare")}
-                    className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${viewMode === "compare"
-                        ? "bg-white dark:bg-zinc-600 shadow-sm text-pink-600 dark:text-pink-400"
-                        : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
-                        }`}
-                >
-                    Compare
-                </button>
+            {/* Left: Industry & View Toggle */}
+            <div className="flex items-center gap-4">
+                {/* Industry Switcher */}
+                <div className="relative group">
+                    <button className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-semibold hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors">
+                        <span className="text-blue-400 dark:text-blue-500 uppercase text-[10px] tracking-wider font-bold">In</span>
+                        {industry || "Select Industry"}
+                        <ChevronDown className="w-4 h-4 text-blue-400" />
+                    </button>
+                    <div className="absolute top-full left-0 mt-2 w-48 bg-white dark:bg-zinc-800 rounded-xl shadow-xl border border-zinc-200 dark:border-zinc-700 hidden group-hover:block p-1 z-50">
+                        {INDUSTRIES.map((ind) => (
+                            <button
+                                key={ind}
+                                onClick={() => onIndustryChange(ind)}
+                                className={`w-full text-left px-3 py-2 rounded-lg text-sm ${industry === ind
+                                    ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 font-semibold"
+                                    : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-700/50"
+                                    }`}
+                            >
+                                {ind}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="h-6 w-px bg-zinc-200 dark:bg-zinc-700 mx-2"></div>
+
+                {/* View Toggle */}
+                <div className="flex bg-zinc-100 dark:bg-zinc-700/50 p-1 rounded-lg">
+                    <button
+                        onClick={() => onViewModeChange("explore")}
+                        className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${viewMode === "explore"
+                            ? "bg-white dark:bg-zinc-600 shadow-sm text-blue-600 dark:text-blue-400"
+                            : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                            }`}
+                    >
+                        Explore
+                    </button>
+                    <button
+                        onClick={() => onViewModeChange("compare")}
+                        className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${viewMode === "compare"
+                            ? "bg-white dark:bg-zinc-600 shadow-sm text-pink-600 dark:text-pink-400"
+                            : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                            }`}
+                    >
+                        Compare
+                    </button>
+                </div>
             </div>
 
             {/* Right: Filters (Only for Explore Mode) */}

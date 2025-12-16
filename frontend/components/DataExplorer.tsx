@@ -10,12 +10,12 @@ import CompareView from "./data-explorer/CompareView";
 import { useDashboard } from "@/context/DashboardContext";
 
 export default function DataExplorer() {
-    const { filters, setFilters, setDistricts: setContextDistricts, setMetric: setContextMetric, data, setData, loading, setLoading } = useDashboard();
+    const { filters, setFilters, setDistricts: setContextDistricts, setMetric: setContextMetric, setIndustry: setContextIndustry, data, setData, loading, setLoading } = useDashboard();
     const [districts, setDistricts] = useState<string[]>([]); // List of available districts
     const [viewMode, setViewMode] = useState<"explore" | "compare">("explore");
 
     // Destructure filters for easier access
-    const { districts: selectedDistricts, timePeriod, density: densityFilter, traffic: trafficFilter, metric: selectedMetric } = filters;
+    const { districts: selectedDistricts, timePeriod, density: densityFilter, traffic: trafficFilter, metric: selectedMetric, industry: selectedIndustry } = filters;
 
     useEffect(() => {
         fetchDistricts();
@@ -106,6 +106,8 @@ export default function DataExplorer() {
                 onTrafficChange={setTrafficFilter}
                 viewMode={viewMode}
                 onViewModeChange={setViewMode}
+                industry={selectedIndustry}
+                onIndustryChange={setContextIndustry}
             />
 
             <div className="flex flex-1 overflow-hidden">
