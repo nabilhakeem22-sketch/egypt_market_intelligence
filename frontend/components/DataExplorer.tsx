@@ -6,11 +6,13 @@ import GlobalContextBar from "./data-explorer/GlobalContextBar";
 import HierarchySidebar from "./data-explorer/HierarchySidebar";
 import AIInsightCard from "./data-explorer/AIInsightCard";
 import HybridChartCard from "./data-explorer/HybridChartCard";
+import CompareView from "./data-explorer/CompareView";
 import { useDashboard } from "@/context/DashboardContext";
 
 export default function DataExplorer() {
     const { filters, setFilters, setDistricts: setContextDistricts, setMetric: setContextMetric, data, setData, loading, setLoading } = useDashboard();
     const [districts, setDistricts] = useState<string[]>([]); // List of available districts
+    const [viewMode, setViewMode] = useState<"explore" | "compare">("explore");
 
     // Destructure filters for easier access
     const { districts: selectedDistricts, timePeriod, density: densityFilter, traffic: trafficFilter, metric: selectedMetric } = filters;
@@ -47,9 +49,13 @@ export default function DataExplorer() {
                 }
             } else {
                 const apiFilters: any = {};
-                if (selectedDistricts.length > 0) apiFilters.districts = selectedDistricts;
-                if (densityFilter.length > 0) apiFilters.competitor_density = densityFilter;
-                if (trafficFilter > 0) apiFilters.min_traffic = trafficFilter;
+                // In compare mode, we might want to fetch everything to allow client-side comparison selector
+                // But for now, respect filters if in explore mode
+                if (viewMode === "explore") {
+                    if (selectedDistricts.length > 0) apiFilters.districts = selectedDistricts;
+                    if (densityFilter.length > 0) apiFilters.competitor_density = densityFilter;
+                    if (trafficFilter > 0) apiFilters.min_traffic = trafficFilter;
+                }
 
                 const res = await api.post(
                     "/api/data",
@@ -98,10 +104,13 @@ export default function DataExplorer() {
                 onDensityChange={toggleDensity}
                 trafficFilter={trafficFilter}
                 onTrafficChange={setTrafficFilter}
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
             />
 
             <div className="flex flex-1 overflow-hidden">
-                {/* 2. Hierarchy Sidebar */}
+                {/* 2. Hierarchy Sidebar (Only show in Explore mode, or keep it to switch context?) */}
+                {/* Let's keep it but maybe it's less relevant in Compare mode. For now, keep it. */}
                 <HierarchySidebar
                     selectedMetric={selectedMetric}
                     onSelectMetric={setSelectedMetric}
@@ -109,17 +118,28 @@ export default function DataExplorer() {
 
                 {/* Main Content Area */}
                 <div className="flex-1 p-6 overflow-y-auto space-y-6">
-                    {/* 3. AI Insight Card */}
-                    <AIInsightCard
-                        metric={selectedMetric}
-                        data={data}
-                    />
 
-                    {/* 4. Hybrid Chart Card */}
-                    <HybridChartCard
-                        data={data}
-                        metric={selectedMetric}
-                    />
+                    {viewMode === "explore" ? (
+                        <>
+                            {/* 3. AI Insight Card */}
+                            <AIInsightCard
+                                metric={selectedMetric}
+                                data={data}
+                            />
+
+                            {/* 4. Hybrid Chart Card */}
+                            <HybridChartCard
+                                data={data}
+                                metric={selectedMetric}
+                            />
+                        </>
+                    ) : (
+                        /* Compare View */
+                        <CompareView
+                            data={data}
+                            districts={districts}
+                        />
+                    )}
                 </div>
             </div>
         </div>
